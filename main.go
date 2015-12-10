@@ -107,6 +107,9 @@ func main() {
 	})
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		app1 := GetEndpoint("maxapp1")
+		app2 := GetEndpoint("maxapp2")
+
 		fmt.Fprintf(w, "app1:\n")
 		fmt.Fprintf(w, "%v\n", app1)
 		fmt.Fprintf(w, "app2:\n")
