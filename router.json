@@ -27,6 +27,6 @@
         "maxConsecutiveFailures": 2
     }],
     "ports": [3000],
-    "cpus": 0.5,
-    "mem": 256.0
+    "cpus": 0.75,
+    "mem": 64.0
 }
