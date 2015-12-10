@@ -1,11 +1,8 @@
-box: carlsaturnino/golang-godep-env
+box: qwertmax/
 # Build definition
 build:
   # The steps that will be executed on build
   steps:
-    - script:
-        name: godep 
-        code: godep restore
     - script:
         name: go build 
         code: go build ./...

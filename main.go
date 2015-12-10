@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/qwertmax/goproxy/Godeps/_workspace/src/github.com/creack/goproxy"
-	"github.com/qwertmax/goproxy/Godeps/_workspace/src/github.com/creack/goproxy/registry"
+	"github.com/creack/goproxy"
+	"github.com/creack/goproxy/registry"
 )
 
 // ServiceRegistry is a local registry of services/versions
