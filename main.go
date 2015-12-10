@@ -20,7 +20,13 @@ type App struct {
 }
 
 var ServiceRegistry = registry.DefaultRegistry{
-	"service1": {
+	//     "service1": {
+	//         "v1": {
+	//             "localhost:9091",
+	//             "localhost:9092",
+	//         },
+	//     },
+	"max": {
 		"v1": {
 			"localhost:9091",
 			"localhost:9092",
