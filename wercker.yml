@@ -1,0 +1,32 @@
+box: golang
+# Build definition
+build:
+  # The steps that will be executed on build
+  steps:
+    - script:
+        name: go build 
+        code: go build ./...
+    - script:
+        name: copy binary
+        code: |
+          # copy neccessary files to ready for deployment 
+          cp source $WERCKER_OUTPUT_DIR/app
+          cp template.sh $WERCKER_OUTPUT_DIR
+deploy:
+  dockerhub:
+    - internal/docker-push:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
+        email: $DOCKER_EMAIL
+        repository: $APP_IMAGE
+        cmd: "/pipeline/source/app"
+        ports: "$CONTAINER_PORT"
+  marathon:
+    - script:
+        name: generate json
+        code: chmod +x template.sh && ./template.sh
+    - wercker/marathon-deploy:
+        marathon-url: $MARATHON_ENDPOINT
+        app-name: $APP_NAME
+        app-json-file: $APP_NAME.json
+        instances: "$INSTANCES"

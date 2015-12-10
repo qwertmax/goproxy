@@ -1,0 +1,30 @@
+{
+    "id": "/router",
+    "instances": 1,
+    "container": {
+        "type": "DOCKER",
+        "docker": {
+            "image": "qwertmax/maxtest",
+            "network": "BRIDGE",
+            "forcePullImage": true,
+            "portMappings": [
+                {
+                    "containerPort": 3000,
+                    "hostPort": 0,
+                    "protocol": "tcp"
+                }
+            ]
+        }
+    },
+    "healthChecks": [{
+        "protocol": "TCP",
+        "gracePeriodSeconds": 600,
+        "intervalSeconds": 30,
+        "portIndex": 0,
+        "timeoutSeconds": 10,
+        "maxConsecutiveFailures": 2
+    }],
+    "ports": [3000],
+    "cpus": 0.5,
+    "mem": 256.0
+}
