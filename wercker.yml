@@ -4,6 +4,9 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
+        name: go get 
+        code: go get ./...
+    - script:
         name: go build 
         code: go build ./...
     - script:
