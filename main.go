@@ -90,6 +90,8 @@ func main() {
 	// }
 
 	http.HandleFunc("/app1", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "app1:\n")
+
 		resp, err := Route(app1)
 		if err != nil {
 			fmt.Fprintf(w, "error: %s\n", err.Error())
@@ -99,6 +101,8 @@ func main() {
 	})
 
 	http.HandleFunc("/app2", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "app2:\n")
+
 		resp, err := Route(app2)
 		if err != nil {
 			fmt.Fprintf(w, "error: %s\n", err.Error())
