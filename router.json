@@ -1,16 +1,18 @@
 {
     "id": "/router",
     "instances": 1,
+     "constraints": [["hostname", "UNIQUE"]],
+     "acceptedResourceRoles": ["slave_public"],
     "container": {
         "type": "DOCKER",
         "docker": {
-            "image": "qwertmax/maxtest",
+            "image": "qwertmax/router",
             "network": "BRIDGE",
             "forcePullImage": true,
             "portMappings": [
                 {
                     "containerPort": 3000,
-                    "hostPort": 0,
+                    "hostPort": 3000,
                     "protocol": "tcp"
                 }
             ]
