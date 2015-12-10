@@ -56,7 +56,7 @@ func GetEndpoint(name string) []App {
 
 func Route(apps []App) ([]byte, error) {
 	item := rand.Intn(len(apps))
-	url := apps[item].IP + ":" + apps[item].Port
+	url := "http://" + apps[item].IP + ":" + apps[item].Port
 
 	reader := strings.NewReader("")
 	request, err := http.NewRequest("GET", url, reader)
@@ -66,7 +66,11 @@ func Route(apps []App) ([]byte, error) {
 
 	client := &http.Client{}
 	resp, err := client.Do(request)
-	// defer resp.Body.Close()
+	defer resp.Body.Close()
+
+	if err != nil {
+		return nil, err
+	}
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	if err != nil {
