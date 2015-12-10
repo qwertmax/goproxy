@@ -1,11 +1,10 @@
-package main
+package goproxy
 
 import (
 	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/qwertmax/goproxy/Godeps/_workspace/src/github.com/creack/goproxy"
 	"github.com/qwertmax/goproxy/Godeps/_workspace/src/github.com/creack/goproxy/registry"
 )
 
@@ -19,11 +18,11 @@ var ServiceRegistry = registry.DefaultRegistry{
 	},
 }
 
-func main() {
-	http.HandleFunc("/", goproxy.NewMultipleHostReverseProxy(ServiceRegistry))
+func Example() {
+	http.HandleFunc("/", NewMultipleHostReverseProxy(ServiceRegistry))
 	http.HandleFunc("/health", func(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "%v\n", ServiceRegistry)
 	})
 	println("ready")
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	log.Fatal(http.ListenAndServe(":9090", nil))
 }
