@@ -4,8 +4,8 @@ build:
   # The steps that will be executed on build
   steps:
     - script:
-        name: go get 
-        code: git clone git@github.com:creack/goproxy.git
+        name: godep 
+        code: godep restore
     - script:
         name: go build 
         code: go build ./...
