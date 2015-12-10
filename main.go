@@ -66,10 +66,10 @@ func Route(apps []App, path string) ([]byte, error) {
 }
 
 func main() {
-	app1 := GetEndpoint("maxapp1")
-	app2 := GetEndpoint("maxapp2")
 
 	http.HandleFunc("/app1", func(w http.ResponseWriter, r *http.Request) {
+		app1 := GetEndpoint("maxapp1")
+
 		fmt.Fprintf(w, "app1:\n")
 
 		resp, err := Route(app1, "")
@@ -81,6 +81,8 @@ func main() {
 	})
 
 	http.HandleFunc("/app2", func(w http.ResponseWriter, r *http.Request) {
+		app2 := GetEndpoint("maxapp2")
+
 		fmt.Fprintf(w, "app2:\n")
 
 		resp, err := Route(app2, "")
@@ -92,6 +94,8 @@ func main() {
 	})
 
 	http.HandleFunc("/from2", func(w http.ResponseWriter, r *http.Request) {
+		app1 := GetEndpoint("maxapp1")
+
 		fmt.Fprintf(w, "app1:\n")
 
 		resp, err := Route(app1, "")
