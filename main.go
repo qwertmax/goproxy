@@ -9,6 +9,7 @@ import (
 	"github.com/creack/goproxy/registry"
 )
 
+// test 1
 // ServiceRegistry is a local registry of services/versions
 var ServiceRegistry = registry.DefaultRegistry{
 	"service1": {
