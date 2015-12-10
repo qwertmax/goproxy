@@ -98,7 +98,7 @@ func main() {
 
 		fmt.Fprintf(w, "app1:\n")
 
-		resp, err := Route(app1, "")
+		resp, err := Route(app1, "/from2")
 		if err != nil {
 			fmt.Fprintf(w, "error: %s\n", err.Error())
 		}
