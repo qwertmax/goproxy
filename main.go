@@ -66,7 +66,7 @@ func Route(apps []App) ([]byte, error) {
 
 	client := &http.Client{}
 	resp, err := client.Do(request)
-	defer resp.Body.Close()
+	// defer resp.Body.Close()
 
 	body, _ := ioutil.ReadAll(resp.Body)
 	if err != nil {
