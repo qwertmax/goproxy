@@ -8,9 +8,6 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
-
-	// "github.com/creack/goproxy"
-	// "github.com/creack/goproxy/registry"
 )
 
 type App struct {
@@ -20,24 +17,8 @@ type App struct {
 	Port    string `json:"port"`
 }
 
-// var ServiceRegistry = registry.DefaultRegistry{
-//     "service1": {
-//         "v1": {
-//             "localhost:9091",
-//             "localhost:9092",
-//         },
-//     },
-// 	"max": {
-// 		"v1": {
-// 			"localhost:9091",
-// 			"localhost:9092",
-// 		},
-// 	},
-// }
-
 func GetEndpoint(name string) []App {
 	reader := strings.NewReader("")
-	// request, err := http.NewRequest("GET", "http://master.mesos:8123/v1/services/_"+name+"._tcp.marathon.mesos", reader)
 	request, err := http.NewRequest("GET", "http://52.34.228.148:8123/v1/services/_"+name+"._tcp.marathon.mesos", reader)
 	if err != nil {
 		panic(err.Error())
@@ -54,9 +35,13 @@ func GetEndpoint(name string) []App {
 	return apps
 }
 
-func Route(apps []App) ([]byte, error) {
+func Route(apps []App, path string) ([]byte, error) {
 	item := rand.Intn(len(apps))
 	url := "http://" + apps[item].IP + ":" + apps[item].Port
+
+	if len(path) > 0 {
+		url = url + "/" + path
+	}
 
 	reader := strings.NewReader("")
 	request, err := http.NewRequest("GET", url, reader)
@@ -84,19 +69,10 @@ func main() {
 	app1 := GetEndpoint("maxapp1")
 	app2 := GetEndpoint("maxapp2")
 
-	// registry := registry.DefaultRegistry{
-	// 	"max": {
-	// 		"v1": {
-	// 			string(app1.IP + ":" + app1.Port),
-	// 			string(app1.IP + ":" + app2.Port),
-	// 		},
-	// 	},
-	// }
-
 	http.HandleFunc("/app1", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "app1:\n")
 
-		resp, err := Route(app1)
+		resp, err := Route(app1, "")
 		if err != nil {
 			fmt.Fprintf(w, "error: %s\n", err.Error())
 		}
@@ -107,7 +83,7 @@ func main() {
 	http.HandleFunc("/app2", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "app2:\n")
 
-		resp, err := Route(app2)
+		resp, err := Route(app2, "")
 		if err != nil {
 			fmt.Fprintf(w, "error: %s\n", err.Error())
 		}
@@ -115,11 +91,18 @@ func main() {
 		fmt.Fprintf(w, "%s\n", resp)
 	})
 
-	// http.HandleFunc("/", goproxy.NewMultipleHostReverseProxy(ServiceRegistry))
-	// http.HandleFunc("/", goproxy.NewMultipleHostReverseProxy(registry))
+	http.HandleFunc("/from2", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "app1:\n")
+
+		resp, err := Route(app1, "")
+		if err != nil {
+			fmt.Fprintf(w, "error: %s\n", err.Error())
+		}
+
+		fmt.Fprintf(w, "%s\n", resp)
+	})
+
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		// fmt.Fprintf(w, "%v\n", ServiceRegistry)
-		// fmt.Fprintf(w, "%v\n", registry)
 		fmt.Fprintf(w, "app1:\n")
 		fmt.Fprintf(w, "%v\n", app1)
 		fmt.Fprintf(w, "app2:\n")
