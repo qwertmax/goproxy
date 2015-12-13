@@ -18,16 +18,10 @@ type App struct {
 }
 
 func GetEndpoint(name string) []App {
-	reader := strings.NewReader("")
-	request, err := http.NewRequest("GET", "http://52.34.228.148:8123/v1/services/_"+name+"._tcp.marathon.mesos", reader)
+	body, err := MakeRequest("GET", "http://52.34.228.148:8123/v1/services/_"+name+"._tcp.marathon.mesos")
 	if err != nil {
 		panic(err.Error())
 	}
-	client := &http.Client{}
-	resp, err := client.Do(request)
-	defer resp.Body.Close()
-
-	body, _ := ioutil.ReadAll(resp.Body)
 
 	var apps []App
 	json.Unmarshal(body, &apps)
@@ -43,21 +37,7 @@ func Route(apps []App, path string) ([]byte, error) {
 		url = url + "/" + path
 	}
 
-	reader := strings.NewReader("")
-	request, err := http.NewRequest("GET", url, reader)
-	if err != nil {
-		return nil, err
-	}
-
-	client := &http.Client{}
-	resp, err := client.Do(request)
-	defer resp.Body.Close()
-
-	if err != nil {
-		return nil, err
-	}
-
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := MakeRequest("GET", url)
 	if err != nil {
 		return nil, err
 	}
@@ -117,4 +97,21 @@ func main() {
 	})
 	println("ready")
 	log.Fatal(http.ListenAndServe(":3000", nil))
+}
+
+func MakeRequest(httpType, url string) ([]byte, error) {
+	reader := strings.NewReader("")
+	request, err := http.NewRequest(httpType, url, reader)
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return ioutil.ReadAll(resp.Body)
 }
