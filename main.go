@@ -24,7 +24,7 @@ func GetEndpoint(name string) []App {
 	}
 
 	var apps []App
-	err := json.Unmarshal(body, &apps)
+	err = json.Unmarshal(body, &apps)
 	if err != nil {
 		panic(err.Error())
 	}
