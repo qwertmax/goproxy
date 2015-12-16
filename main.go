@@ -67,7 +67,7 @@ func handleApplications(w http.ResponseWriter, r *http.Request) {
 
 	var path string
 	if len(url) == 1 {
-		path = "/"
+		path = ""
 	} else {
 		path = url[1]
 	}
