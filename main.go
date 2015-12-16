@@ -48,58 +48,65 @@ func Route(apps []App, path string) ([]byte, error) {
 	return body, nil
 }
 
+func handleApplications(w http.ResponseWriter, r *http.Request) {
+	url := strings.Split(r.URL.Path, "/")
+	fmt.Fprintf(w, "%s\n", url)
+	fmt.Fprintf(w, "%s\n", r.Method)
+	fmt.Fprintf(w, "%s\n", r.URL.Query())
+}
+
 func main() {
 
-	http.HandleFunc("/app1", func(w http.ResponseWriter, r *http.Request) {
-		app1 := GetEndpoint("maxapp1")
+	// http.HandleFunc("/app1", func(w http.ResponseWriter, r *http.Request) {
+	// 	app1 := GetEndpoint("maxapp1")
 
-		fmt.Fprintf(w, "app1:\n")
+	// 	fmt.Fprintf(w, "app1:\n")
 
-		resp, err := Route(app1, "")
-		if err != nil {
-			fmt.Fprintf(w, "error: %s\n", err.Error())
-		}
+	// 	resp, err := Route(app1, "")
+	// 	if err != nil {
+	// 		fmt.Fprintf(w, "error: %s\n", err.Error())
+	// 	}
 
-		fmt.Fprintf(w, "%s\n", resp)
-	})
+	// 	fmt.Fprintf(w, "%s\n", resp)
+	// })
 
-	http.HandleFunc("/app2", func(w http.ResponseWriter, r *http.Request) {
-		app2 := GetEndpoint("maxapp2")
+	// http.HandleFunc("/app2", func(w http.ResponseWriter, r *http.Request) {
+	// 	app2 := GetEndpoint("maxapp2")
 
-		fmt.Fprintf(w, "app2:\n")
+	// 	fmt.Fprintf(w, "app2:\n")
 
-		resp, err := Route(app2, "")
-		if err != nil {
-			fmt.Fprintf(w, "error: %s\n", err.Error())
-		}
+	// 	resp, err := Route(app2, "")
+	// 	if err != nil {
+	// 		fmt.Fprintf(w, "error: %s\n", err.Error())
+	// 	}
 
-		fmt.Fprintf(w, "%s\n", resp)
-	})
+	// 	fmt.Fprintf(w, "%s\n", resp)
+	// })
 
-	http.HandleFunc("/from2", func(w http.ResponseWriter, r *http.Request) {
-		app1 := GetEndpoint("maxapp1")
+	// http.HandleFunc("/from2", func(w http.ResponseWriter, r *http.Request) {
+	// 	app1 := GetEndpoint("maxapp1")
 
-		fmt.Fprintf(w, "app1:\n")
+	// 	fmt.Fprintf(w, "app1:\n")
 
-		resp, err := Route(app1, "/from2")
-		if err != nil {
-			fmt.Fprintf(w, "error: %s\n", err.Error())
-		}
+	// 	resp, err := Route(app1, "/from2")
+	// 	if err != nil {
+	// 		fmt.Fprintf(w, "error: %s\n", err.Error())
+	// 	}
 
-		fmt.Fprintf(w, "%s\n", resp)
-	})
+	// 	fmt.Fprintf(w, "%s\n", resp)
+	// })
 
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-		app1 := GetEndpoint("maxapp1")
-		app2 := GetEndpoint("maxapp2")
+	// http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	// 	app1 := GetEndpoint("maxapp1")
+	// 	app2 := GetEndpoint("maxapp2")
 
-		fmt.Fprintf(w, "app1:\n")
-		fmt.Fprintf(w, "%v\n", app1)
-		fmt.Fprintf(w, "app2:\n")
-		fmt.Fprintf(w, "%v\n", app2)
-	})
+	// 	fmt.Fprintf(w, "app1:\n")
+	// 	fmt.Fprintf(w, "%v\n", app1)
+	// 	fmt.Fprintf(w, "app2:\n")
+	// 	fmt.Fprintf(w, "%v\n", app2)
+	// })
 	println("ready")
-	log.Fatal(http.ListenAndServe(":3000", nil))
+	log.Fatal(http.ListenAndServe(":3000", http.HandlerFunc(handleApplications)))
 }
 
 func MakeRequest(httpType, url string) ([]byte, error) {
