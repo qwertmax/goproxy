@@ -126,15 +126,15 @@ func main() {
 	// 	fmt.Fprintf(w, "%s\n", resp)
 	// })
 
-	// http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
-	// 	app1 := GetEndpoint("maxapp1")
-	// 	app2 := GetEndpoint("maxapp2")
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		app1 := GetEndpoint("maxapp1")
+		app2 := GetEndpoint("maxapp2")
 
-	// 	fmt.Fprintf(w, "app1:\n")
-	// 	fmt.Fprintf(w, "%v\n", app1)
-	// 	fmt.Fprintf(w, "app2:\n")
-	// 	fmt.Fprintf(w, "%v\n", app2)
-	// })
+		fmt.Fprintf(w, "app1:\n")
+		fmt.Fprintf(w, "%v\n", app1)
+		fmt.Fprintf(w, "app2:\n")
+		fmt.Fprintf(w, "%v\n", app2)
+	})
 	println("ready")
 	log.Fatal(http.ListenAndServe(":3000", http.HandlerFunc(handleApplications)))
 }
