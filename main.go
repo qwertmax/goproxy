@@ -2,11 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
+	"net/http/httputil"
 	"strings"
 )
 
@@ -46,6 +48,16 @@ func Route(apps []App, path string) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+func GetAppName(r *http.Request) (string, error) {
+	url := strings.SplitN(strings.TrimLeft(r.URL.Path, "/"), "/", 2)
+
+	if len(url) == 0 || len(url[0]) == 0 {
+		return "", errors.New("no app name")
+	}
+
+	return url[0], nil
 }
 
 func handleApplications(w http.ResponseWriter, r *http.Request) {
@@ -135,8 +147,22 @@ func main() {
 	// 	fmt.Fprintf(w, "app2:\n")
 	// 	fmt.Fprintf(w, "%v\n", app2)
 	// })
+
 	println("ready")
-	log.Fatal(http.ListenAndServe(":3000", http.HandlerFunc(handleApplications)))
+	log.Fatal(http.ListenAndServe(":3000", &httputil.ReverseProxy{
+		Director: func(r *http.Request) {
+			r.URL.Scheme = "http"
+
+			appName, err := GetAppName(r)
+			if err != nil {
+				// SendError(err, w)
+			}
+			apps := GetEndpoint(appName)
+			item := rand.Intn(len(apps))
+			r.URL.Host = apps[item].Host + ":" + apps[item].Port
+		},
+	}))
+	// log.Fatal(http.ListenAndServe(":3000", http.HandlerFunc(handleApplications)))
 }
 
 func MakeRequest(httpType, url string) ([]byte, error) {
@@ -154,4 +180,15 @@ func MakeRequest(httpType, url string) ([]byte, error) {
 	defer resp.Body.Close()
 
 	return ioutil.ReadAll(resp.Body)
+}
+
+func SendError(err error, w http.ResponseWriter) {
+	fmt.Fprintf(w, "%v\n", struct {
+		Type    string `json:"error"`
+		Message string `json:"message"`
+	}{
+		"error",
+		err.Error(),
+	})
+	return
 }
