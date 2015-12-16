@@ -49,10 +49,40 @@ func Route(apps []App, path string) ([]byte, error) {
 }
 
 func handleApplications(w http.ResponseWriter, r *http.Request) {
-	url := strings.Split(r.URL.Path, "/")
-	fmt.Fprintf(w, "%s\n", url)
-	fmt.Fprintf(w, "%s\n", r.Method)
-	fmt.Fprintf(w, "%s\n", r.URL.Query())
+	url := strings.SplitN(strings.TrimLeft(r.URL.Path, "/"), "/", 2)
+
+	fmt.Printf("%#v\n", url)
+	if len(url) == 0 || len(url[0]) == 0 {
+		fmt.Fprintf(w, "%v\n", struct {
+			Type    string `json:"error"`
+			Message string `json:"message"`
+		}{
+			"error",
+			"no app name",
+		})
+		return
+	}
+
+	applicationName := url[0]
+
+	var path string
+	if len(url) == 1 {
+		path = "/"
+	} else {
+		path = url[1]
+	}
+
+	// Router logic starts here
+	app := GetEndpoint(applicationName)
+
+	fmt.Fprintf(w, "Application: %s\n", applicationName)
+
+	resp, err := Route(app, path)
+	if err != nil {
+		fmt.Fprintf(w, "error: %s\n", err.Error())
+	}
+
+	fmt.Fprintf(w, "%s", resp)
 }
 
 func main() {
